@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -123,7 +122,6 @@ private:
     std::atomic<bool> vocalClip { false };
     std::atomic<bool> keyboardClip { false };
     std::atomic<bool> masterClip { false };
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
