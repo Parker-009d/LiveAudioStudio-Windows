@@ -1,0 +1,41 @@
+name: Build Live Audio Studio for Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Check out Live Audio Studio
+        uses: actions/checkout@v4
+        with:
+          path: LiveAudioStudioProject
+      - name: Check out JUCE 9.0.4
+        uses: actions/checkout@v4
+        with:
+          repository: juce-framework/JUCE
+          ref: 9.0.4
+          path: JUCE
+      - name: Configure Windows build
+        run: cmake -S LiveAudioStudioProject -B build -G "Visual Studio 17 2022" -A x64
+      - name: Build Release version
+        run: cmake --build build --config Release --parallel
+      - name: Find and copy executable
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem build -Filter "Live Audio Studio.exe" -Recurse | Where-Object { $_.FullName -match "[\\/]Release[\\/]" } | Select-Object -First 1
+          if (-not $exe) { throw "Live Audio Studio.exe was not found." }
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item $exe.FullName "dist/Live Audio Studio.exe"
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Live-Audio-Studio-Windows
+          path: dist/Live Audio Studio.exe
+          if-no-files-found: error

@@ -1,0 +1,9 @@
+.DS_Store
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+*.user
+*.suo
+*.xcuserstate
+CMakeLists.txt.before-windows-build
